@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os 
 from const import *
 import cocos as c
 
@@ -8,6 +9,14 @@ class MainWindow(c.layer.ColorLayer):
 
     def __init__(self, BG):
         super(MainWindow, self).__init__(*BG)
+        
+        # my field
+        mf = c.sprite.Sprite(os.path.join(SD, FPIC), position = (SZ[0]//4, SZ[1]//2))
+        # enemy field
+        ef = c.sprite.Sprite(os.path.join(SD, FPIC), position = (3*SZ[0]//4, SZ[1]//2))
+
+        self.add(mf)
+        self.add(ef)
 
 c.director.director.init(*SZ, caption = CP)
 
