@@ -8,11 +8,12 @@ class Field(c.layer.Layer):
     def __init__(self, pic, pos):
         super(Field, self).__init__()
 
-        field = c.sprite.Sprite(os.path.join(SD, pic), position = pos)
-        self.add(field)
+        layer = c.sprite.Sprite(os.path.join(SD, pic), position = pos)
+        self.add(layer)
 
-
-
+        # generate empty field (without ships) 
+        field = {(chr(i), j): None for i in range(ord('a'), ord('k')) for j in range(0, 10)}
+        
 
 class MyField(Field):
     ''' My field layer '''
@@ -39,7 +40,7 @@ class EnemyField(Field):
             cell = self.virtual_crd_to_cell_crd()
                 
     def virtual_crd_to_cell_crd(self):
-        ''' Virtual coordinates map to cell coordinates '''
+        ''' Virtual coordinates map to cell coordinates of the field '''
         pass
 
 class Background(c.layer.ColorLayer):
