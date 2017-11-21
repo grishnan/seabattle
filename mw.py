@@ -20,8 +20,8 @@ def main():
     c.director.director.init(*SZ, caption = CP)
 
     wdw = MainWindow(BG)
-    mf = Field(FPIC, (SZ[0]//4, SZ[1]//2))
-    ef = Field(FPIC, (3*SZ[0]//4, SZ[1]//2))
+    mf = Field(FPIC, MFPOS)
+    ef = Field(FPIC, EFPOS)
 
     scn = c.scene.Scene(wdw, mf, ef)
 
