@@ -11,6 +11,10 @@ class Field(c.layer.Layer):
         field = c.sprite.Sprite(os.path.join(SD, pic), position = pos)
         self.add(field)
 
+    def virtual_crd_to_field_crd(self):
+        ''' Virtual coordinates map to field coordinates '''
+        pass
+
 class Background(c.layer.ColorLayer):
     ''' Background layer  '''
 
