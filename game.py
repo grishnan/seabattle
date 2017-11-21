@@ -12,7 +12,7 @@ class Field(c.layer.Layer):
         self.add(layer)
 
         # generate empty field (without ships) 
-        field = {(chr(i), j): None for i in range(ord('a'), ord('k')) for j in range(0, 10)}
+        field = {(i, j): None for i in range(0, 10) for j in range(0, 10)}
         
 
 class MyField(Field):
@@ -36,12 +36,22 @@ class EnemyField(Field):
         ''' Mouse handler '''
         self.posx, self.posy = c.director.director.get_virtual_coordinates(x, y)
 
+        # if enemy field is clicked
         if EFRUC[0]-SF < self.posx < EFRUC[0] and EFRUC[1]-SF < self.posy < EFRUC[1]:
+            # get cell coordinates by mouse coordinates
             cell = self.virtual_crd_to_cell_crd()
+            if cell != None:
+                print(cell)
+                # TODO send cell by network
                 
     def virtual_crd_to_cell_crd(self):
         ''' Virtual coordinates map to cell coordinates of the field '''
-        pass
+        dx = self.posx - EFRUC[0] + SF
+        dy = self.posy - EFRUC[1] + SF
+        cell = None
+        if SB < dx % (SC+SB) < SC+SB and SB < dy % (SC+SB) < SC+SB:
+            cell = (int(dx // (SC+SB)), int(dy // (SC+SB)))
+        return cell
 
 class Background(c.layer.ColorLayer):
     ''' Background layer  '''
