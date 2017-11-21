@@ -10,16 +10,16 @@ class Field(c.layer.Layer):
         field = c.sprite.Sprite(os.path.join(SD, pic), position = pos)
         self.add(field)
 
-class BgLayer(c.layer.ColorLayer):
+class Background(c.layer.ColorLayer):
     ''' Background layer  '''
 
     def __init__(self, BG):
-        super(BgLayer, self).__init__(*BG)
+        super(Background, self).__init__(*BG)
     
 def main():
     c.director.director.init(*SZ, caption = CP)
 
-    bg = BgLayer(BG)
+    bg = Background(BG)
     mf = Field(FPIC, MFPOS)
     ef = Field(FPIC, EFPOS)
 
