@@ -21,6 +21,9 @@ class MyField(Field):
     def __init__(self, pic, pos):
         super(MyField, self).__init__(pic, pos)
 
+    def gen_ships(self):
+        pass
+
 
 class EnemyField(Field):
     ''' Enemy field layer '''
