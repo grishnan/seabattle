@@ -12,6 +12,8 @@ class Field(c.layer.Layer):
         self.add(field)
 
 
+
+
 class MyField(Field):
     ''' My field layer '''
 
@@ -34,10 +36,10 @@ class EnemyField(Field):
         self.posx, self.posy = c.director.director.get_virtual_coordinates(x, y)
 
         if EFRUC[0]-SF < self.posx < EFRUC[0] and EFRUC[1]-SF < self.posy < EFRUC[1]:
-            field = self.virtual_crd_to_field_crd()
+            cell = self.virtual_crd_to_cell_crd()
                 
-    def virtual_crd_to_field_crd(self):
-        ''' Virtual coordinates map to field coordinates '''
+    def virtual_crd_to_cell_crd(self):
+        ''' Virtual coordinates map to cell coordinates '''
         pass
 
 class Background(c.layer.ColorLayer):
