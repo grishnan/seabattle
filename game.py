@@ -10,20 +10,20 @@ class Field(c.layer.Layer):
         field = c.sprite.Sprite(os.path.join(SD, pic), position = pos)
         self.add(field)
 
-class MainWindow(c.layer.ColorLayer):
-    ''' Main program window  '''
+class BgLayer(c.layer.ColorLayer):
+    ''' Background layer  '''
 
     def __init__(self, BG):
-        super(MainWindow, self).__init__(*BG)
+        super(BgLayer, self).__init__(*BG)
     
 def main():
     c.director.director.init(*SZ, caption = CP)
 
-    wdw = MainWindow(BG)
+    bg = BgLayer(BG)
     mf = Field(FPIC, MFPOS)
     ef = Field(FPIC, EFPOS)
 
-    scn = c.scene.Scene(wdw, mf, ef)
+    scn = c.scene.Scene(bg, mf, ef)
 
     c.director.director.run(scn)
 

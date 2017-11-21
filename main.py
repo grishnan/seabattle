@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import mw
+import game
 
 if __name__ == "__main__":
-    mw.main()
+    game.main()
