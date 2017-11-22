@@ -1,6 +1,7 @@
 import os.path 
 import cocos as c
 from const import *
+from random import randint as rnd
 
 class Field(c.layer.Layer):
     ''' Field layer '''
@@ -12,7 +13,7 @@ class Field(c.layer.Layer):
         self.add(layer)
 
         # generate empty field (without ships) 
-        field = {(i, j): None for i in range(0, 10) for j in range(0, 10)}
+        field = {(i, j): False for i in range(0, 10) for j in range(0, 10)}
         
 
 class MyField(Field):
@@ -20,10 +21,14 @@ class MyField(Field):
 
     def __init__(self, pic, pos):
         super(MyField, self).__init__(pic, pos)
+        self.gen_ships()
 
     def gen_ships(self):
-        pass
-
+        i, j = rnd(0, 9), rnd(0, 9)
+        x = (MFRUC[0]-SF) + (i+1)*SB + i*SC + SC//2
+        y = (MFRUC[1]-SF) + (j+1)*SB + j*SC + SC//2
+        deck = c.sprite.Sprite(os.path.join(SD, PPIC), position = (x, y))
+        self.add(deck)
 
 class EnemyField(Field):
     ''' Enemy field layer '''

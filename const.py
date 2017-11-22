@@ -27,4 +27,5 @@ SB  = 5                   # border size in pixels
 ### dependent constants ###
 ###########################
 
-EFRUC = (EFPOS[0] + SFL // 2, EFPOS[1] + SFL // 2) # right upper corner of the enemy field
+EFRUC = (EFPOS[0] + SFL // 2, EFPOS[1] + SFL // 2) # right upper corner of enemy field
+MFRUC = (MFPOS[0] + SFL // 2, MFPOS[1] + SFL // 2) # right upper corner of my field
