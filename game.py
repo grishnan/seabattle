@@ -50,8 +50,8 @@ class MyField(Field):
                         di, dj = fi + d*direct[0], fj + d*direct[1]
                         self.field[(di, dj)] = True
                         self.draw()
-                    is_gen = True
-                    break
+                    is_gen = True # generation is finished
+                    break         # exit from for direct in directlist
     
     def draw(self):
         ''' Drawing '''
