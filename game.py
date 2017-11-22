@@ -35,11 +35,15 @@ class MyField(Field):
         ''' Generate one nd-decked ship '''
         is_gen = False
         while not is_gen:
+            # get random cell of the field
             fi, fj = rnd(0, 9), rnd(0, 9)
+            # list of possible directions for ship creating
             directlist = [(1, 0), (0, 1), (-1, 0), (0, -1)]
             shf(directlist)
+            # try to build a ship in one of some different directions
             for direct in directlist:
                 li, lj = fi + nd*direct[0], fj + nd*direct[1]
+                # if last deck of a ship is on the field
                 if 0 <= li <= 9 and 0 <= lj <= 9:
                     for d in range(0, nd):
                         di, dj = fi + d*direct[0], fj + d*direct[1]
