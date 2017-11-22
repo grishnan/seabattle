@@ -2,6 +2,7 @@ import os.path
 import cocos as c
 from const import *
 from random import randint as rnd
+from random import shuffle as shf
 
 class Field(c.layer.Layer):
     ''' Field layer '''
@@ -21,14 +22,33 @@ class MyField(Field):
 
     def __init__(self, pic, pos):
         super(MyField, self).__init__(pic, pos)
-        self.gen_ships()
+        self._gen_ships()
 
-    def gen_ships(self):
-        i, j = rnd(0, 9), rnd(0, 9)
-        x = (MFRUC[0]-SF) + (i+1)*SB + i*SC + SC//2
-        y = (MFRUC[1]-SF) + (j+1)*SB + j*SC + SC//2
-        deck = c.sprite.Sprite(os.path.join(SD, PPIC), position = (x, y))
-        self.add(deck)
+    def _gen_ships(self):
+        ''' Generate ships on my field '''
+
+        for nd in range(MND, 0, -1):
+            for ns in range(1, 6-nd):
+                self._gen_ship(nd)
+
+    def _gen_ship(self, nd):
+        ''' Generate one nd-decked ship '''
+        is_gen = False
+        while not is_gen:
+            fi, fj = rnd(0, 9), rnd(0, 9)
+            directlist = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+            shf(directlist)
+            for direct in directlist:
+                li, lj = fi + nd*direct[0], fj + nd*direct[1]
+                if 0 <= li <= 9 and 0 <= lj <= 9:
+                    for d in range(0, nd):
+                        di, dj = fi + d*direct[0], fj + d*direct[1]
+                        x = (MFRUC[0]-SF) + (di+1)*SB + di*SC + SC//2
+                        y = (MFRUC[1]-SF) + (dj+1)*SB + dj*SC + SC//2
+                        deck = c.sprite.Sprite(os.path.join(SD, PPIC), position = (x, y))
+                        self.add(deck)
+                    is_gen = True
+                    break
 
 class EnemyField(Field):
     ''' Enemy field layer '''

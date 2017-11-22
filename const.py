@@ -15,6 +15,8 @@ DPIC = "d.png"            # destroy picture
 MFPOS = (320, 240)        # my field position on the background layer
 EFPOS = (960, 240)        # enemy field position on the background layer
 
+MND = 4                   # max number of decks (by the game)
+
 #########################################################################
 ### these values are depended on the field picture, don't change them ###
 #########################################################################
