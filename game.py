@@ -14,8 +14,8 @@ class Field(c.layer.Layer):
         self.add(layer)
 
         # generate empty field (without ships) 
-        field = {(i, j): False for i in range(0, 10) for j in range(0, 10)}
-        
+        self.field = {(i, j): False for i in range(0, 10) for j in range(0, 10)}
+
 
 class MyField(Field):
     ''' My field layer '''
@@ -45,14 +45,21 @@ class MyField(Field):
                 li, lj = fi + nd*direct[0], fj + nd*direct[1]
                 # if last deck of a ship is on the field
                 if 0 <= li <= 9 and 0 <= lj <= 9:
+                    # run through by decks of a ship
                     for d in range(0, nd):
                         di, dj = fi + d*direct[0], fj + d*direct[1]
-                        x = (MFRUC[0]-SF) + (di+1)*SB + di*SC + SC//2
-                        y = (MFRUC[1]-SF) + (dj+1)*SB + dj*SC + SC//2
-                        deck = c.sprite.Sprite(os.path.join(SD, PPIC), position = (x, y))
-                        self.add(deck)
+                        self.field[(di, dj)] = True
+                        self.draw()
                     is_gen = True
                     break
+    
+    def draw(self):
+        ''' Drawing '''
+        for cell in self.field:
+            if self.field[cell]:
+                x = (MFRUC[0]-SF) + (cell[0]+1)*SB + cell[0]*SC + SC//2
+                y = (MFRUC[1]-SF) + (cell[1]+1)*SB + cell[1]*SC + SC//2
+                self.add(c.sprite.Sprite(os.path.join(SD, PPIC), position = (x, y)))
 
 class EnemyField(Field):
     ''' Enemy field layer '''
