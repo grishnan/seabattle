@@ -89,13 +89,6 @@ class MyField(Field):
                 y = (MFRUC[1]-SF) + (cell[1]+1)*SB + cell[1]*SC + SC//2
                 self.add(c.sprite.Sprite(os.path.join(SD, PPIC), position = (x, y)))
 
-    def make_move(self):
-        ''' Make move '''
-        pass
-
-    def wait_enemy_move(self):
-        ''' Wait enemy move '''
-        pass
 
 class EnemyField(Field):
     ''' Enemy field layer '''
@@ -134,6 +127,22 @@ class Background(c.layer.ColorLayer):
     def __init__(self, BG):
         super(Background, self).__init__(*BG)
 
+def make_move(cell):
+    ''' Make move '''
+    sock = socket(AF_INET, SOCK_STREAM)
+    sock.connect((IP, PORT))
+    # There are two message types in the game: 'cell' and 'info'.
+    # Message type 'cell' is for send attacked cell.
+    # Message type 'info' is designed for send information about hit the target.
+    # Therefore info message can be one of two values: 1 or 0 (hit or miss)
+    msg = "cell " + str(cell[0]) + str(cell[1])
+    sock.send(str.encode(msg)) # send a cell to enemy
+    info = sock.recv(6)        # get info message (i think 6 bytes is enough)
+    sock.close()
+
+def wait_enemy_move():
+    ''' Wait enemy move '''
+    pass
 
 def main():
     c.director.director.init(*SZ, caption = CP)
