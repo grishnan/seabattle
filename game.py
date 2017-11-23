@@ -21,7 +21,6 @@ class MyField(Field):
         
         self.ships = {}  # ships of my field
         self.gen_ships() # generate ships
-        print(self.ships)
 
     def gen_ships(self):
         ''' Generate ships on my field '''
@@ -33,7 +32,6 @@ class MyField(Field):
     def _gen_ship(self, nd, name):
         ''' Generate one nd-decked ship '''
         is_gen = False
-        self.ships[name] = {}
         while not is_gen:
             # get random cell of the field
             fi, fj = rnd(0, 9), rnd(0, 9)
@@ -45,16 +43,45 @@ class MyField(Field):
                 li, lj = fi + nd*direct[0], fj + nd*direct[1]
                 # if last deck of a ship is on the field
                 if 0 <= li <= 9 and 0 <= lj <= 9:
-                    # run through by decks of a ship
+                    # try to build a ship
+                    ship = {}
                     for d in range(0, nd):
                         di, dj = fi + d*direct[0], fj + d*direct[1]
-                        self.ships[name][(di, dj)] = False
-                    self.draw()
-                    is_gen = True # generation is finished
-                    break         # exit from for direct in directlist
+                        ship[(di, dj)] = False
+                    # check collision between a ship and other ships   
+                    if self._is_collision(ship):
+                        continue # if collision is detected then go to next direction
+                    else:
+                        self.ships[name] = ship # add ship to the self.ships
+                        self.draw_ships()       # drawing ships
+                        is_gen = True           # generation is finished
+                        break                   # exit from loop 
+
+    def _is_collision(self, ship):
+        ''' Is there a collision between a ship and others ships '''
+        collision = False
+        for name_other_ship in self.ships:
+            if self._get_distance_ships(ship, name_other_ship) < 2:
+                collision = True
+                break
+        return collision
+
+    def _get_distance_ships(self, ship, name_other_ship):
+        ''' Get distance between two ships '''
+        fir_ship = ship
+        sec_ship = self.ships[name_other_ship]
+        distances = []
+        for cfs in fir_ship:
+            for css in sec_ship:
+                distances.append(self._get_distance_cells(cfs, css))
+        return min(distances)
+
+    def _get_distance_cells(self, fir_cell, sec_cell):
+        ''' Get distance between two cells '''
+        return abs(fir_cell[0] - sec_cell[0]) + abs(fir_cell[1] - sec_cell[1])
     
-    def draw(self):
-        ''' Drawing '''
+    def draw_ships(self):
+        ''' Drawing ships '''
         for ship in self.ships:
             for cell in self.ships[ship]:
                 x = (MFRUC[0]-SF) + (cell[0]+1)*SB + cell[0]*SC + SC//2
