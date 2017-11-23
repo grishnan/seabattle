@@ -100,16 +100,15 @@ class EnemyField(Field):
 
     def on_mouse_press(self, x, y, buttons, modifiers):
         ''' Mouse handler '''
-        if self.mord:
-            self.posx, self.posy = c.director.director.get_virtual_coordinates(x, y)
+        self.posx, self.posy = c.director.director.get_virtual_coordinates(x, y)
 
-            # if enemy field is clicked
-            if EFRUC[0]-SF < self.posx < EFRUC[0] and EFRUC[1]-SF < self.posy < EFRUC[1]:
-                # get cell coordinates by mouse coordinates
-                cell = self.virtual_crd_to_cell_crd()
-                if cell != None:
-                    print(cell)
-                    # TODO send cell by network
+        # if enemy field is clicked
+        if EFRUC[0]-SF < self.posx < EFRUC[0] and EFRUC[1]-SF < self.posy < EFRUC[1]:
+            # get cell coordinates by mouse coordinates
+            cell = self.virtual_crd_to_cell_crd()
+            if cell != None:
+                print(cell)
+                # TODO send cell by network
                 
     def virtual_crd_to_cell_crd(self):
         ''' Virtual coordinates map to cell coordinates of the field '''
