@@ -3,6 +3,8 @@ import cocos as c
 from const import *
 from random import randint as rnd
 from random import shuffle as shf
+from server import *
+import threading as t
 
 class Field(c.layer.Layer):
     ''' Field layer '''
@@ -12,7 +14,9 @@ class Field(c.layer.Layer):
 
         layer = c.sprite.Sprite(os.path.join(SD, pic), position = pos)
         self.add(layer)
-
+        
+        self.mord = True # motion order
+        
 class MyField(Field):
     ''' My field layer '''
 
@@ -50,7 +54,7 @@ class MyField(Field):
                     for d in range(0, nd):
                         di, dj = fi + d*direct[0], fj + d*direct[1]
                         self.ships[name][(di, dj)] = False
-                        self.draw()
+                    self.draw()
                     is_gen = True # generation is finished
                     break         # exit from for direct in directlist
     
@@ -74,15 +78,16 @@ class EnemyField(Field):
 
     def on_mouse_press(self, x, y, buttons, modifiers):
         ''' Mouse handler '''
-        self.posx, self.posy = c.director.director.get_virtual_coordinates(x, y)
+        if self.mord:
+            self.posx, self.posy = c.director.director.get_virtual_coordinates(x, y)
 
-        # if enemy field is clicked
-        if EFRUC[0]-SF < self.posx < EFRUC[0] and EFRUC[1]-SF < self.posy < EFRUC[1]:
-            # get cell coordinates by mouse coordinates
-            cell = self.virtual_crd_to_cell_crd()
-            if cell != None:
-                print(cell)
-                # TODO send cell by network
+            # if enemy field is clicked
+            if EFRUC[0]-SF < self.posx < EFRUC[0] and EFRUC[1]-SF < self.posy < EFRUC[1]:
+                # get cell coordinates by mouse coordinates
+                cell = self.virtual_crd_to_cell_crd()
+                if cell != None:
+                    print(cell)
+                    # TODO send cell by network
                 
     def virtual_crd_to_cell_crd(self):
         ''' Virtual coordinates map to cell coordinates of the field '''
@@ -109,4 +114,7 @@ def main():
 
     scn = c.scene.Scene(bg, mf, ef)
 
+    #st = t.Thread(target=run_server)
+    #st.start()
     c.director.director.run(scn)
+    #st.join()
