@@ -13,27 +13,28 @@ class Field(c.layer.Layer):
         layer = c.sprite.Sprite(os.path.join(SD, pic), position = pos)
         self.add(layer)
 
-        # generate empty field (without ships) 
-        self.field = {(i, j): False for i in range(0, 10) for j in range(0, 10)}
-
-
 class MyField(Field):
     ''' My field layer '''
 
     def __init__(self, pic, pos):
         super(MyField, self).__init__(pic, pos)
-        self._gen_ships()
+        
+        self.ships = {}   # ships of my field
+        self._gen_ships() # generate ships
 
     def _gen_ships(self):
         ''' Generate ships on my field '''
 
-        for nd in range(MND, 0, -1):
-            for ns in range(1, 6-nd):
-                self._gen_ship(nd)
+        #for nd in range(MND, 0, -1):
+        #    for ns in range(1, 6-nd):
+        #        self._gen_ship(nd)
+        
+        self._gen_ship(nd = 4, name = 0)
 
-    def _gen_ship(self, nd):
+    def _gen_ship(self, nd, name):
         ''' Generate one nd-decked ship '''
         is_gen = False
+        self.ships[name] = {}
         while not is_gen:
             # get random cell of the field
             fi, fj = rnd(0, 9), rnd(0, 9)
@@ -48,15 +49,15 @@ class MyField(Field):
                     # run through by decks of a ship
                     for d in range(0, nd):
                         di, dj = fi + d*direct[0], fj + d*direct[1]
-                        self.field[(di, dj)] = True
+                        self.ships[name][(di, dj)] = False
                         self.draw()
                     is_gen = True # generation is finished
                     break         # exit from for direct in directlist
     
     def draw(self):
         ''' Drawing '''
-        for cell in self.field:
-            if self.field[cell]:
+        for ship in self.ships:
+            for cell in self.ships[ship]:
                 x = (MFRUC[0]-SF) + (cell[0]+1)*SB + cell[0]*SC + SC//2
                 y = (MFRUC[1]-SF) + (cell[1]+1)*SB + cell[1]*SC + SC//2
                 self.add(c.sprite.Sprite(os.path.join(SD, PPIC), position = (x, y)))
