@@ -3,8 +3,6 @@ import cocos as c
 from const import *
 from random import randint as rnd
 from random import shuffle as shf
-from server import *
-import threading as t
 
 class Field(c.layer.Layer):
     ''' Field layer '''
@@ -24,9 +22,9 @@ class MyField(Field):
         super(MyField, self).__init__(pic, pos)
         
         self.ships = {}   # ships of my field
-        self._gen_ships() # generate ships
+        self.gen_ships() # generate ships
 
-    def _gen_ships(self):
+    def gen_ships(self):
         ''' Generate ships on my field '''
 
         #for nd in range(MND, 0, -1):
@@ -114,7 +112,4 @@ def main():
 
     scn = c.scene.Scene(bg, mf, ef)
 
-    #st = t.Thread(target=run_server)
-    #st.start()
     c.director.director.run(scn)
-    #st.join()
