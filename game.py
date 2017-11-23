@@ -3,6 +3,7 @@ import cocos as c
 from const import *
 from random import randint as rnd
 from random import shuffle as shf
+from socket import *
 
 class Field(c.layer.Layer):
     ''' Field layer '''
@@ -87,6 +88,14 @@ class MyField(Field):
                 x = (MFRUC[0]-SF) + (cell[0]+1)*SB + cell[0]*SC + SC//2
                 y = (MFRUC[1]-SF) + (cell[1]+1)*SB + cell[1]*SC + SC//2
                 self.add(c.sprite.Sprite(os.path.join(SD, PPIC), position = (x, y)))
+
+    def make_move(self):
+        ''' Make move '''
+        pass
+
+    def wait_enemy_move(self):
+        ''' Wait enemy move '''
+        pass
 
 class EnemyField(Field):
     ''' Enemy field layer '''

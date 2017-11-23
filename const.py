@@ -17,6 +17,9 @@ EFPOS = (960, 240)        # enemy field position on the background layer
 
 MND = 4                   # max number of decks (by the game)
 
+IP = "192.168.0.2"        # internet protocol address of an enemy
+PORT = 12345              # TCP port
+
 #########################################################################
 ### these values are depended on the field picture, don't change them ###
 #########################################################################
