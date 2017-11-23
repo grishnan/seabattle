@@ -13,26 +13,23 @@ class Field(c.layer.Layer):
         layer = c.sprite.Sprite(os.path.join(SD, pic), position = pos)
         self.add(layer)
         
-        self.mord = True # motion order
-        
 class MyField(Field):
     ''' My field layer '''
 
     def __init__(self, pic, pos):
         super(MyField, self).__init__(pic, pos)
         
-        self.ships = {}   # ships of my field
+        self.ships = {}  # ships of my field
         self.gen_ships() # generate ships
+        print(self.ships)
 
     def gen_ships(self):
         ''' Generate ships on my field '''
-
-        #for nd in range(MND, 0, -1):
-        #    for ns in range(1, 6-nd):
-        #        self._gen_ship(nd)
+        names = iter([i for i in range(0, 10)]) # names of ships
+        for nd in range(MND, 0, -1):
+            for ns in range(1, 6-nd):
+                self._gen_ship(nd, next(names))
         
-        self._gen_ship(nd = 4, name = 0)
-
     def _gen_ship(self, nd, name):
         ''' Generate one nd-decked ship '''
         is_gen = False
