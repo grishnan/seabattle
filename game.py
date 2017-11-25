@@ -4,6 +4,7 @@ from const import *
 from random import randint as rnd
 from random import shuffle as shf
 from socket import *
+import threading
 
 class Field(c.layer.Layer):
     ''' Field layer '''
@@ -89,7 +90,6 @@ class MyField(Field):
                 y = (MFRUC[1]-SF) + (cell[1]+1)*SB + cell[1]*SC + SC//2
                 self.add(c.sprite.Sprite(os.path.join(SD, PPIC), position = (x, y)))
 
-
 class EnemyField(Field):
     ''' Enemy field layer '''
     
@@ -109,8 +109,8 @@ class EnemyField(Field):
             # get cell coordinates by mouse coordinates
             cell = self.virtual_crd_to_cell_crd()
             if cell != None:
-                print(cell)
-                # TODO send cell by network
+                # make one move (send a target of shot to enemy)
+                make_move(cell)
                 
     def virtual_crd_to_cell_crd(self):
         ''' Virtual coordinates map to cell coordinates of the field '''
@@ -130,19 +130,27 @@ class Background(c.layer.ColorLayer):
 def make_move(cell):
     ''' Make move '''
     sock = socket(AF_INET, SOCK_STREAM)
-    sock.connect((IP, PORT))
-    # There are two message types in the game: 'cell' and 'info'.
-    # Message type 'cell' is for send attacked cell.
-    # Message type 'info' is designed for send information about hit the target.
-    # Therefore info message can be one of two values: 1 or 0 (hit or miss)
-    msg = "cell " + str(cell[0]) + str(cell[1])
-    sock.send(str.encode(msg)) # send a cell to enemy
-    info = sock.recv(6)        # get info message (i think 6 bytes is enough)
+    sock.connect((EN_IP, PORT))
+    target = str(cell[0]) + str(cell[1])
+    sock.send(str.encode(target)) # send a target of shot to enemy
+    info = sock.recv(6) # get info message (6 bytes is enough: b'info 1' as example)
+    print(info)
     sock.close()
 
-def wait_enemy_move():
+def wait_enemy_move(sock):
     ''' Wait enemy move '''
-    pass
+    while True:
+        connection, address = sock.accept()
+        data = connection.recv(2)
+        # define the target of hit
+        cell = int(data.decode()[0]), int(data.decode()[1])
+        print(cell)
+
+        # Message type 'info' is designed for send information about hit the target.
+        # Therefore info message can be one of two values: 1 or 0 (hit or miss)
+        msg = "info 1" # testing message
+        connection.send(str.encode(msg))
+        connection.close()
 
 def main():
     c.director.director.init(*SZ, caption = CP)
@@ -151,6 +159,17 @@ def main():
     mf = MyField(FPIC, MFPOS)
     ef = EnemyField(FPIC, EFPOS)
 
+    # set up server
+    sock = socket(AF_INET, SOCK_STREAM)
+    sock.bind((MY_IP, PORT))
+    sock.listen(1)
+
+    # run server
+    t = threading.Thread(target = wait_enemy_move, args = (sock, ))
+    t.start()
+
+    # create scene
     scn = c.scene.Scene(bg, mf, ef)
 
+    # run Main Loop
     c.director.director.run(scn)
