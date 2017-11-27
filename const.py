@@ -8,9 +8,9 @@ CP = "Sea battle"         # window's caption
 SD = "sprite"             # sprite directory
 
 FPIC = "f.png"            # field picture
-PPIC = "p.png"            # part of a ship picture
+DPIC = "d.png"            # deck of a ship
 MPIC = "m.png"            # miss picture
-DPIC = "d.png"            # destroy picture
+HPIC = "h.png"            # hit picture
 
 MFPOS = (320, 240)        # my field position on the background layer
 EFPOS = (960, 240)        # enemy field position on the background layer

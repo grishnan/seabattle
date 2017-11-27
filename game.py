@@ -41,6 +41,7 @@ class MyField(Field):
         for nd in range(MND, 0, -1):
             for ns in range(1, 6-nd):
                 self._gen_ship(nd, next(names))
+        self.draw_ships() # drawing ships
         
     def _gen_ship(self, nd, name):
         ''' Generate one nd-decked ship '''
@@ -66,7 +67,6 @@ class MyField(Field):
                         continue # if collision is detected then go to next direction
                     else:
                         self.ships[name] = ship # add ship to the self.ships
-                        self.draw_ships()       # drawing ships
                         is_gen = True           # generation is finished
                         break                   # exit from loop 
 
@@ -97,9 +97,8 @@ class MyField(Field):
         ''' Drawing ships '''
         for ship in self.ships:
             for cell in self.ships[ship]:
-                x = (MFRUC[0]-SF) + (cell[0]+1)*SB + cell[0]*SC + SC//2
-                y = (MFRUC[1]-SF) + (cell[1]+1)*SB + cell[1]*SC + SC//2
-                self.add(c.sprite.Sprite(os.path.join(SD, PPIC), position = (x, y)))
+                x, y = self._cell_crd_to_virtual_crd(cell)
+                self.add(c.sprite.Sprite(os.path.join(SD, DPIC), position = (x, y)))
                 
     def receive_cell(self):
         ''' Receive cell '''
@@ -121,6 +120,12 @@ class MyField(Field):
             conn.send(str.encode("info 1")) if is_hit else conn.send(str.encode("info 0"))
             conn.close()
 
+    def _cell_crd_to_virtual_crd(self, cell):
+        ''' Cell coordinates map to virtual coordinates of the field '''
+        x = (MFRUC[0]-SF) + (cell[0]+1)*SB + cell[0]*SC + SC//2
+        y = (MFRUC[1]-SF) + (cell[1]+1)*SB + cell[1]*SC + SC//2
+        return x, y
+
 class EnemyField(Field):
     ''' Enemy field layer '''
     
@@ -138,12 +143,12 @@ class EnemyField(Field):
         # if enemy field is clicked
         if EFRUC[0]-SF < self.posx < EFRUC[0] and EFRUC[1]-SF < self.posy < EFRUC[1]:
             # get cell coordinates by mouse coordinates
-            cell = self.virtual_crd_to_cell_crd()
+            cell = self._virtual_crd_to_cell_crd()
             if cell != None:
                 # send the clicked cell to enemy side
                 self.send_cell(cell)
                 
-    def virtual_crd_to_cell_crd(self):
+    def _virtual_crd_to_cell_crd(self):
         ''' Virtual coordinates map to cell coordinates of the field '''
         dx = self.posx - EFRUC[0] + SF
         dy = self.posy - EFRUC[1] + SF
