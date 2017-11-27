@@ -98,7 +98,8 @@ class MyField(Field):
         for ship in self.ships:
             for cell in self.ships[ship]:
                 x, y = self._cell_crd_to_virtual_crd(cell)
-                self.add(c.sprite.Sprite(os.path.join(SD, DPIC), position = (x, y)))
+                self.add(c.sprite.Sprite(os.path.join(SD, HPIC), position = (x, y)))
+                self.add(c.sprite.Sprite(os.path.join(SD, DPIC), position = (x, y)), name = str(cell))
                 
     def receive_cell(self):
         ''' Receive cell '''
@@ -115,9 +116,12 @@ class MyField(Field):
                     is_hit = True
                     break
             
-            # Message type 'info' is designed for send information about hit the target.
-            # Therefore info message can be one of two values: 1 or 0 (hit or miss)
-            conn.send(str.encode("info 1")) if is_hit else conn.send(str.encode("info 0"))
+            if is_hit:
+                conn.send(b'1') # if target is hit then send to enemy b'1'
+                x, y = self._cell_crd_to_virtual_crd(cell)
+                self.remove(str(cell)) 
+            else:
+                conn.send(b'0') # if target isn't hit then send to enemy b'0'
             conn.close()
 
     def _cell_crd_to_virtual_crd(self, cell):
