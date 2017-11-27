@@ -6,6 +6,12 @@ from random import shuffle as shf
 from socket import *
 import threading
 
+class Background(c.layer.ColorLayer):
+    ''' Background layer  '''
+
+    def __init__(self, BG):
+        super(Background, self).__init__(*BG)
+
 class Field(c.layer.Layer):
     ''' Field layer '''
     
@@ -23,6 +29,11 @@ class MyField(Field):
         
         self.ships = {}  # ships of my field
         self.gen_ships() # generate ships
+
+        # set up server
+        self.sock = socket(AF_INET, SOCK_STREAM)
+        self.sock.bind((MY_IP, PORT))
+        self.sock.listen(1)
 
     def gen_ships(self):
         ''' Generate ships on my field '''
@@ -89,6 +100,21 @@ class MyField(Field):
                 x = (MFRUC[0]-SF) + (cell[0]+1)*SB + cell[0]*SC + SC//2
                 y = (MFRUC[1]-SF) + (cell[1]+1)*SB + cell[1]*SC + SC//2
                 self.add(c.sprite.Sprite(os.path.join(SD, PPIC), position = (x, y)))
+                
+    def receive_cell(self):
+        ''' Receive cell '''
+        while True:
+            connection, address = self.sock.accept()
+            data = connection.recv(2)
+            # define the target of hit
+            cell = int(data.decode()[0]), int(data.decode()[1])
+            print(cell)
+            
+            # Message type 'info' is designed for send information about hit the target.
+            # Therefore info message can be one of two values: 1 or 0 (hit or miss)
+            msg = "info 1" # testing message
+            connection.send(str.encode(msg))
+            connection.close()
 
 class EnemyField(Field):
     ''' Enemy field layer '''
@@ -109,8 +135,8 @@ class EnemyField(Field):
             # get cell coordinates by mouse coordinates
             cell = self.virtual_crd_to_cell_crd()
             if cell != None:
-                # make one move (send a target of shot to enemy)
-                make_move(cell)
+                # send the clicked cell to enemy side
+                self.send_cell(cell)
                 
     def virtual_crd_to_cell_crd(self):
         ''' Virtual coordinates map to cell coordinates of the field '''
@@ -120,37 +146,16 @@ class EnemyField(Field):
         if SB < dx % (SC+SB) < SC+SB and SB < dy % (SC+SB) < SC+SB:
             cell = (int(dx // (SC+SB)), int(dy // (SC+SB)))
         return cell
-
-class Background(c.layer.ColorLayer):
-    ''' Background layer  '''
-
-    def __init__(self, BG):
-        super(Background, self).__init__(*BG)
-
-def make_move(cell):
-    ''' Make move '''
-    sock = socket(AF_INET, SOCK_STREAM)
-    sock.connect((EN_IP, PORT))
-    target = str(cell[0]) + str(cell[1])
-    sock.send(str.encode(target)) # send a target of shot to enemy
-    info = sock.recv(6) # get info message (6 bytes is enough: b'info 1' as example)
-    print(info)
-    sock.close()
-
-def wait_enemy_move(sock):
-    ''' Wait enemy move '''
-    while True:
-        connection, address = sock.accept()
-        data = connection.recv(2)
-        # define the target of hit
-        cell = int(data.decode()[0]), int(data.decode()[1])
-        print(cell)
-
-        # Message type 'info' is designed for send information about hit the target.
-        # Therefore info message can be one of two values: 1 or 0 (hit or miss)
-        msg = "info 1" # testing message
-        connection.send(str.encode(msg))
-        connection.close()
+    
+    def send_cell(self, cell):
+        ''' Send cell '''
+        sock = socket(AF_INET, SOCK_STREAM)
+        sock.connect((EN_IP, PORT))
+        target = str(cell[0]) + str(cell[1])
+        sock.send(str.encode(target)) # send a target of shot to enemy
+        info = sock.recv(6) # get info message (6 bytes is enough: b'info 1' as example)
+        print(info)
+        sock.close()
 
 def main():
     c.director.director.init(*SZ, caption = CP)
@@ -159,13 +164,8 @@ def main():
     mf = MyField(FPIC, MFPOS)
     ef = EnemyField(FPIC, EFPOS)
 
-    # set up server
-    sock = socket(AF_INET, SOCK_STREAM)
-    sock.bind((MY_IP, PORT))
-    sock.listen(1)
-
     # run server
-    t = threading.Thread(target = wait_enemy_move, args = (sock, ))
+    t = threading.Thread(target = mf.receive_cell)
     t.start()
 
     # create scene
