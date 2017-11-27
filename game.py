@@ -167,8 +167,7 @@ class EnemyField(Field):
         sock.connect((EN_IP, PORT))
         target = str(cell[0]) + str(cell[1])
         sock.send(str.encode(target)) # send a target of shot to enemy
-        info = sock.recv(1) # get result (1 byte is enough: b'1' or b'0')
-        print(info)
+        info = sock.recv(1)           # get result (1 byte is enough: b'1' or b'0')
         sock.close()
 
 def main():
