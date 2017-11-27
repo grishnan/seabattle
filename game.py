@@ -104,17 +104,22 @@ class MyField(Field):
     def receive_cell(self):
         ''' Receive cell '''
         while True:
-            connection, address = self.sock.accept()
-            data = connection.recv(2)
+            conn, address = self.sock.accept()
+            data = conn.recv(2)
             # define the target of hit
             cell = int(data.decode()[0]), int(data.decode()[1])
-            print(cell)
+            
+            # To know: hit or miss
+            is_hit = False
+            for ns in self.ships:
+                if cell in self.ships[ns]:
+                    is_hit = True
+                    break
             
             # Message type 'info' is designed for send information about hit the target.
             # Therefore info message can be one of two values: 1 or 0 (hit or miss)
-            msg = "info 1" # testing message
-            connection.send(str.encode(msg))
-            connection.close()
+            conn.send(str.encode("info 1")) if is_hit else conn.send(str.encode("info 0"))
+            conn.close()
 
 class EnemyField(Field):
     ''' Enemy field layer '''
