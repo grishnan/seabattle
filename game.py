@@ -141,6 +141,9 @@ class EnemyField(Field):
 
     def __init__(self, pic, pos):
         super(EnemyField, self).__init__(pic, pos)
+        
+        # history of shots
+        self.shots = set()
 
     def on_mouse_press(self, x, y, buttons, modifiers):
         ''' Mouse handler '''
@@ -172,11 +175,14 @@ class EnemyField(Field):
         info = sock.recv(1).decode()  # get result (1 byte is enough: b'1' or b'0')
         
         x, y = self._cell_crd_to_virtual_crd(cell)
-        delta = EFRUC[0] - MFRUC[0]
+        d = EFRUC[0] - MFRUC[0]
         if info == '1':
-            self.add(c.sprite.Sprite(os.path.join(SD, CPIC), position = (x + delta, y)))
+            self.shots.add(cell) # add cell to history of shots
+            self.add(c.sprite.Sprite(os.path.join(SD, CPIC), position = (x + d, y)))
         else:
-            self.add(c.sprite.Sprite(os.path.join(SD, MPIC), position = (x + delta, y)))
+            if cell not in self.shots:
+                self.shots.add(cell) # add cell to history of shots
+                self.add(c.sprite.Sprite(os.path.join(SD, MPIC), position = (x + d, y)))
         
         sock.close()
 
