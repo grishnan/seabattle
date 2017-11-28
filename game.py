@@ -21,6 +21,12 @@ class Field(c.layer.Layer):
         layer = c.sprite.Sprite(os.path.join(SD, pic), position = pos)
         self.add(layer)
         
+    def _cell_crd_to_virtual_crd(self, cell):
+        ''' Cell coordinates map to virtual coordinates of the field '''
+        x = (MFRUC[0]-SF) + (cell[0]+1)*SB + cell[0]*SC + SC//2
+        y = (MFRUC[1]-SF) + (cell[1]+1)*SB + cell[1]*SC + SC//2
+        return x, y
+        
 class MyField(Field):
     ''' My field layer '''
 
@@ -123,12 +129,6 @@ class MyField(Field):
                 conn.send(b'0') # if target isn't hit then send to enemy b'0'
             conn.close()
 
-    def _cell_crd_to_virtual_crd(self, cell):
-        ''' Cell coordinates map to virtual coordinates of the field '''
-        x = (MFRUC[0]-SF) + (cell[0]+1)*SB + cell[0]*SC + SC//2
-        y = (MFRUC[1]-SF) + (cell[1]+1)*SB + cell[1]*SC + SC//2
-        return x, y
-
 class EnemyField(Field):
     ''' Enemy field layer '''
     
@@ -166,7 +166,15 @@ class EnemyField(Field):
         sock.connect((EN_IP, PORT))
         target = str(cell[0]) + str(cell[1])
         sock.send(str.encode(target)) # send a target of shot to enemy
-        info = sock.recv(1)           # get result (1 byte is enough: b'1' or b'0')
+        info = sock.recv(1).decode()  # get result (1 byte is enough: b'1' or b'0')
+        
+        if info == '1':
+            x, y = self._cell_crd_to_virtual_crd(cell)
+            delta = EFRUC[0] - MFRUC[0]
+            self.add(c.sprite.Sprite(os.path.join(SD, CPIC), position = (x + delta, y)))
+        else:
+            pass
+        
         sock.close()
 
 def main():
