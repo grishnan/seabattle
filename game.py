@@ -119,14 +119,18 @@ class MyField(Field):
             is_hit = False
             for ns in self.ships:
                 if cell in self.ships[ns]:
-                    is_hit = True
-                    break
+                    if not self.ships[ns][cell]:     # if the target isn't destroyed yet
+                        is_hit = True
+                        self.ships[ns][cell] = True  # to fix hit
+                        break
+                    else:                            # if the target is destroyed already
+                        break
             
             if is_hit:
                 conn.send(b'1') # if target is hit then send to enemy b'1'
                 self.remove(str(cell))
             else:
-                conn.send(b'0') # if target isn't hit then send to enemy b'0'
+                conn.send(b'0') # if miss then send to enemy b'0'
             conn.close()
 
 class EnemyField(Field):
@@ -137,24 +141,23 @@ class EnemyField(Field):
 
     def __init__(self, pic, pos):
         super(EnemyField, self).__init__(pic, pos)
-        self.posx, self.posy = 0, 0 # initial mouse coordinates
 
     def on_mouse_press(self, x, y, buttons, modifiers):
         ''' Mouse handler '''
-        self.posx, self.posy = c.director.director.get_virtual_coordinates(x, y)
+        posx, posy = c.director.director.get_virtual_coordinates(x, y)
 
         # if enemy field is clicked
-        if EFRUC[0]-SF < self.posx < EFRUC[0] and EFRUC[1]-SF < self.posy < EFRUC[1]:
+        if EFRUC[0]-SF < posx < EFRUC[0] and EFRUC[1]-SF < posy < EFRUC[1]:
             # get cell coordinates by mouse coordinates
-            cell = self._virtual_crd_to_cell_crd()
+            cell = self._virtual_crd_to_cell_crd(posx, posy)
             if cell != None:
                 # send the clicked cell to enemy side
                 self.send_cell(cell)
                 
-    def _virtual_crd_to_cell_crd(self):
+    def _virtual_crd_to_cell_crd(self, posx, posy):
         ''' Virtual coordinates map to cell coordinates of the field '''
-        dx = self.posx - EFRUC[0] + SF
-        dy = self.posy - EFRUC[1] + SF
+        dx = posx - EFRUC[0] + SF
+        dy = posy - EFRUC[1] + SF
         cell = None
         if SB < dx % (SC+SB) < SC+SB and SB < dy % (SC+SB) < SC+SB:
             cell = (int(dx // (SC+SB)), int(dy // (SC+SB)))
