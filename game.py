@@ -122,9 +122,7 @@ class MyField(Field):
                     if not self.ships[ns][cell]:     # if the target isn't destroyed yet
                         is_hit = True
                         self.ships[ns][cell] = True  # to fix hit
-                        break
-                    else:                            # if the target is destroyed already
-                        break
+                    break
             
             if is_hit:
                 conn.send(b'1') # if target is hit then send to enemy b'1'
