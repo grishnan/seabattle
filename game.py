@@ -177,13 +177,12 @@ class EnemyField(Field):
         x, y = self._cell_crd_to_virtual_crd(cell)
         d = EFRUC[0] - MFRUC[0]
         if info == '1':
-            self.shots.add(cell) # add cell to history of shots
             self.add(c.sprite.Sprite(os.path.join(SD, CPIC), position = (x + d, y)))
         else:
             if cell not in self.shots:
-                self.shots.add(cell) # add cell to history of shots
                 self.add(c.sprite.Sprite(os.path.join(SD, MPIC), position = (x + d, y)))
         
+        self.shots.add(cell) # add cell to history of shots
         sock.close()
 
 def main():
