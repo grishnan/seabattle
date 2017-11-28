@@ -168,12 +168,12 @@ class EnemyField(Field):
         sock.send(str.encode(target)) # send a target of shot to enemy
         info = sock.recv(1).decode()  # get result (1 byte is enough: b'1' or b'0')
         
+        x, y = self._cell_crd_to_virtual_crd(cell)
+        delta = EFRUC[0] - MFRUC[0]
         if info == '1':
-            x, y = self._cell_crd_to_virtual_crd(cell)
-            delta = EFRUC[0] - MFRUC[0]
             self.add(c.sprite.Sprite(os.path.join(SD, CPIC), position = (x + delta, y)))
         else:
-            pass
+            self.add(c.sprite.Sprite(os.path.join(SD, MPIC), position = (x + delta, y)))
         
         sock.close()
 
