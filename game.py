@@ -118,8 +118,7 @@ class MyField(Field):
             
             if is_hit:
                 conn.send(b'1') # if target is hit then send to enemy b'1'
-                x, y = self._cell_crd_to_virtual_crd(cell)
-                self.remove(str(cell)) 
+                self.remove(str(cell))
             else:
                 conn.send(b'0') # if target isn't hit then send to enemy b'0'
             conn.close()
