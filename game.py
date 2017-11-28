@@ -25,7 +25,7 @@ class Field(c.layer.Layer):
         # to define who will be doing the first move.
         # At the start of the game it's undefined.
         # Therefore moveflag is equal None for every player and
-        # both sides must agree about primacy.
+        # both sides must agree about primacy before the game
         self.moveflag = None
         
     def _cell_crd_to_virtual_crd(self, cell):
