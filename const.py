@@ -11,6 +11,7 @@ FPIC = "f.png"            # field picture
 DPIC = "d.png"            # deck of a ship
 MPIC = "m.png"            # miss picture
 HPIC = "h.png"            # hit picture
+CPIC = "c.png"            # cross picture
 
 MFPOS = (320, 240)        # my field position on the background layer
 EFPOS = (960, 240)        # enemy field position on the background layer
