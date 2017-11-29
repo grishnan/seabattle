@@ -14,19 +14,21 @@ class Background(c.layer.ColorLayer):
 
 class Field(c.layer.Layer):
     ''' Field layer '''
+
+    # For normal process of game it's important
+    # to define who will be doing the first move.
+    # At the start of the game it's undefined.
+    # Therefore moveflag is equal None for every player and
+    # both sides must agree about primacy before the game.
+    # In other words moveflag must be equal True for one side
+    # and must be equal False for another side at the start of the game.
+    moveflag = None
     
     def __init__(self, pic, pos):
         super(Field, self).__init__()
 
         layer = c.sprite.Sprite(os.path.join(SD, pic), position = pos)
         self.add(layer)
-
-        # For normal process of game it's important
-        # to define who will be doing the first move.
-        # At the start of the game it's undefined.
-        # Therefore moveflag is equal None for every player and
-        # both sides must agree about primacy before the game
-        self.moveflag = None
         
     def _cell_crd_to_virtual_crd(self, cell):
         ''' Cell coordinates map to virtual coordinates of the field '''
@@ -135,6 +137,7 @@ class MyField(Field):
                 conn.send(b'1') # if target is hit then send to enemy b'1'
                 self.remove(str(cell))
             else:
+                Field.moveflag = True # has right of move
                 conn.send(b'0') # if miss then send to enemy b'0'
             conn.close()
 
@@ -159,8 +162,9 @@ class EnemyField(Field):
             # get cell coordinates by mouse coordinates
             cell = self._virtual_crd_to_cell_crd(posx, posy)
             if cell != None:
-                # send the clicked cell to enemy side
-                self.send_cell(cell)
+                if Field.moveflag: # if a player has right of move
+                    # send the clicked cell to enemy side
+                    self.send_cell(cell)
                 
     def _virtual_crd_to_cell_crd(self, posx, posy):
         ''' Virtual coordinates map to cell coordinates of the field '''
@@ -185,6 +189,7 @@ class EnemyField(Field):
             self.add(c.sprite.Sprite(os.path.join(SD, CPIC), position = (x + d, y)))
         else:
             if cell not in self.shots:
+                Field.moveflag = False # to deny to move
                 self.add(c.sprite.Sprite(os.path.join(SD, MPIC), position = (x + d, y)))
         
         self.shots.add(cell) # add cell to history of shots
