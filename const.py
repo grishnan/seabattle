@@ -18,9 +18,14 @@ EFPOS = (960, 240)        # enemy field position on the background layer
 
 MND = 4                   # max number of decks (by the game)
 
+PORT  = 12345             # TCP port
+
+##################################################
+### usually, these values are changed manually ###
+##################################################
 EN_IP = "192.168.0.2"     # enemy IP address
 MY_IP = "192.168.0.1"     # my IP address
-PORT  = 12345             # TCP port
+MF = True                 # this value must be equal True for one side and False for other side
 
 #########################################################################
 ### these values are depended on the field picture, don't change them ###

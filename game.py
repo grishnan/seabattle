@@ -22,7 +22,7 @@ class Field(c.layer.Layer):
     # both sides must agree about primacy before the game.
     # In other words moveflag must be equal True for one side
     # and must be equal False for another side at the start of the game.
-    moveflag = None
+    moveflag = MF
     
     def __init__(self, pic, pos):
         super(Field, self).__init__()
