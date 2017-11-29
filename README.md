@@ -12,3 +12,5 @@ How to run:
 Author: grishnan
 
 Email: grishnan@gmail.com
+
+![Appearance](sprite/example.png)
