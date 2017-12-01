@@ -13,10 +13,20 @@ MPIC = "m.png"            # miss picture
 HPIC = "h.png"            # hit picture
 CPIC = "c.png"            # cross picture
 
-MFPOS = (320, 240)        # my field position on the background layer
-EFPOS = (960, 240)        # enemy field position on the background layer
+MFPOS = (320, 200)        # my field position on the background layer
+EFPOS = (960, 200)        # enemy field position on the background layer
 
 MND = 4                   # max number of decks (by the game)
+
+FD         = "fonts"            # font directory
+FF         = "LDFComicSans.ttf" # font file
+MY_LBL     = "My field"         # label text for my field
+EN_LBL     = "Enemy field"      # label text for enemy field
+FONT_NAME  = "LDFComicSans"     # font name
+FONT_SIZE  = 32                 # font size
+MY_LBL_POS = 260, 415           # label position of my field
+EN_LBL_POS = 870, 415           # label position of enemy field
+FONT_COLOR = 181, 42, 163, 255  # font color
 
 PORT  = 12345             # TCP port
 
@@ -24,7 +34,7 @@ PORT  = 12345             # TCP port
 ### usually, these values are changed manually ###
 ##################################################
 EN_IP = "192.168.0.2"     # enemy IP address
-MY_IP = "192.168.0.1"     # my IP address
+MY_IP = "192.168.1.2"     # my IP address
 MF = True                 # this value must be equal True for one side and False for other side
 
 #########################################################################

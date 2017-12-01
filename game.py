@@ -1,5 +1,6 @@
 import os.path 
 import cocos as c
+import pyglet as pg
 from const import *
 from random import randint as rnd
 from random import shuffle as shf
@@ -11,6 +12,16 @@ class Background(c.layer.ColorLayer):
 
     def __init__(self, BG):
         super(Background, self).__init__(*BG)
+
+        # load new font like MS Comic Sans
+        pg.font.add_file(os.path.join(FD, FF))
+
+        # create text labels
+        my_lbl = c.text.Label(text = MY_LBL, font_name = FONT_NAME, font_size = FONT_SIZE, position = MY_LBL_POS, color = FONT_COLOR)
+        en_lbl = c.text.Label(text = EN_LBL, font_name = FONT_NAME, font_size = FONT_SIZE, position = EN_LBL_POS, color = FONT_COLOR)
+
+        self.add(my_lbl)
+        self.add(en_lbl)
 
 class Field(c.layer.Layer):
     ''' Field layer '''
