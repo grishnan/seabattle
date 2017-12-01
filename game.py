@@ -18,8 +18,7 @@ class Field(c.layer.Layer):
     # For normal process of game it's important
     # to define who will be doing the first move.
     # At the start of the game it's undefined.
-    # Therefore moveflag is equal None for every player and
-    # both sides must agree about primacy before the game.
+    # Therefore both sides must agree about primacy before the game.
     # In other words moveflag must be equal True for one side
     # and must be equal False for another side at the start of the game.
     moveflag = MF
